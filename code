@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- NEW: SEO Meta Tags for Google Ranking -->
+    <meta name="description" content="The Polyglot Portal: Free, AI-powered online translation tool supporting 200+ languages. Translate text instantly with tone control and text-to-speech (TTS) playback.">
+    <meta name="keywords" content="free translator, AI translator, online translation, language tool, 200 languages, text to speech, tone control">
+    
+    <title>Free AI Translator | The Polyglot Portal | 200+ Languages, TTS, Tone Control</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Use Inter font family --><style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0A1938; /* Dark Navy/Black Mix */
+        }
+        .card {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        /* Custom scrollbar for textareas */
+        textarea::-webkit-scrollbar {
+            width: 8px;
+        }
+        textarea::-webkit-scrollbar-thumb {
+            background-color: #c7d2fe; /* indigo-200 */
+            border-radius: 4px;
+        }
+        textarea:hover::-webkit-scrollbar-thumb {
+            background-color: #a5b4fc; /* indigo-300 */
+        }
+        .btn-action {
+            transition: all 0.2s;
+        }
+        .btn-action:hover {
+            transform: translateY(-1px);
+        }
+        .swap-btn {
+            background-color: #fff;
+            border: 1px solid #e0e7ff; /* indigo-100 */
+            color: #4f46e5; /* indigo-600 */
+        }
+        .swap-btn:hover {
+            background-color: #e0e7ff; /* indigo-100 */
+        }
+        /* Style for the responsive arrow (kept for swap button) */
+        .responsive-arrow {
+            transition: transform 0.3s;
+            transform: rotate(90deg); /* Default vertical for mobile/small screen */
+        }
+        @media (min-width: 1024px) { /* On large screens (lg breakpoint) make it horizontal */
+            is-
+                transform: rotate(0deg); 
+            }
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 min-h-screen flex items-center justify-center">
+
+    <div class="w-full max-w-6xl bg-white rounded-2xl card p-6 md:p-10">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-5xl font-extrabold text-indigo-700">
+                The <span class="text-indigo-400">Polyglot</span> Portal
+            </h1>
+            <p class="text-gray-500 mt-3 text-base md:text-lg">
+                Access **200+ languages** with precision, tone control, and native regional context.
+            </p>
+        </header>
+
+        <!-- Configuration Row --><div class="flex flex-col md:flex-row items-start justify-between mb-6 gap-4">
+            
+            <!-- LEFT SIDE: Tone Selector --><div class="w-full md:w-1/3 flex items-center gap-4">
+                <div class="flex-1">
+                    <label for="translationTone" class="block text-sm font-medium text-gray-700 mb-1">Translation Tone</label>
+                    <select id="translationTone" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 shadow-sm">
+                        <option value="Standard" selected>Standard (Neutral)</option>
+                        <option value="Formal">Formal (Professional)</option>
+                        <option value="Casual">Casual (Friendly)</option>
+                        <option value="Technical">Technical (Precise)</option>
+                        <option value="Creative">Creative (Literary)</option>
+                        <option value="Simple">Simple (A1 Level)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- RIGHT SIDE: Button and Status Message --><div class="w-full md:w-2/3 flex flex-col sm:flex-row justify-end gap-3 items-center">
+                <button id="translateButton" class="btn-action w-full sm:w-auto px-8 py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 disabled:opacity-50 disabled:cursor-not-allowed text-lg shadow-md">
+                    Translate Text
+                </button>
+                <!-- Status Container --><div class="flex items-center justify-center min-h-[2.5rem] w-full sm:w-auto gap-2">
+                    <!-- NEW: Dancing Animal GIF -->
+                    <img id="loadingIcon" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYTc2MGFlY2NjMGZkOGYxNTAxMzg2ZGY5NjQ0YTkxYWYzZDE3ZmEwNSZlcD12MV9pbnRlcm5hbF9naWYmY3Q9cw/iYqmtFwS0h4A03f8zI/giphy.gif" alt="Dancing Llama" class="w-12 h-12 hidden rounded-full object-cover" />
+                    <div id="statusMessage" class="text-sm text-center font-medium text-gray-600"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Translation Interface --><div class="flex flex-col lg:flex-row gap-4">
+
+            <!-- Source Text Panel --><div class="flex-1 relative bg-gray-50 p-4 rounded-xl border border-gray-200">
+                <label for="sourceLanguage" class="block text-sm font-semibold text-gray-700 mb-1">Source Language</label>
+                <select id="sourceLanguage" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 mb-3 shadow-sm">
+                    <option value="Auto-Detect">Auto Detect</option>
+                    <option value="English" selected>English</option>
+                    <option value="Spanish">Spanish</option>
+                    <option value="French">French</option>
+                    <option value="German">German</option>
+                    <option value="Chinese (Mandarin)">Chinese (Mandarin)</option>
+                    <option value="Japanese">Japanese</option>
+                    <option value="Korean">Korean</option>
+                    <option value="Arabic">Arabic</option>
+                    <option value="Hindi">Hindi</option>
+                    <option value="Swahili">Swahili</option>
+                    <!-- Gemini supports 200+ languages, these are just common examples --></select>
+
+                <textarea id="sourceText" rows="12" placeholder="Enter the text to be translated here..." class="w-full p-4 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 resize-none transition duration-150 ease-in-out text-base"></textarea>
+                
+                <div class="text-xs text-gray-500 mt-2 flex justify-between">
+                    <span id="charCount">0 characters</span>
+                    <span id="wordCount">0 words</span>
+                </div>
+            </div>
+
+            <!-- Swap Button and Language Map/Region --><div class="flex flex-col justify-center items-center lg:py-4 gap-4">
+                <button id="swapLanguagesButton" class="swap-btn p-3 rounded-full shadow-lg focus:outline-none focus:ring-4 focus:ring-indigo-200" title="Swap Languages">
+                    <!-- Icon for Swap (Inline SVG for simplicity) --><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 responsive-arrow">
+                        <path d="M17 9.5 21 5 17 0.5" /><path d="M21 5H3" /><path d="M7 14.5 3 19 7 23.5" /><path d="M3 19h18" />
+                    </svg>
+                </button>
+                
+                <!-- Language Map/Region Display (visible only on desktop) --><div id="languageMapContainer" class="w-full max-w-xs bg-white p-4 rounded-xl shadow-xl border border-indigo-200 transition-all duration-300 hidden lg:block">
+                    <h3 class="text-sm font-bold text-indigo-600 mb-1 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 1 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        <span id="mapTitle">Source Language Region</span>
+                    </h3>
+                    <p id="mapFlag" class="text-4xl text-center my-2 transition-transform duration-300 transform scale-100 hover:scale-110">🌎</p>
+                    <p id="mapSummary" class="text-xs text-gray-600 min-h-[3rem]">Select a language to see its native region summary.</p>
+                    <p id="mapStatus" class="text-xs text-red-500 mt-1"></p>
+                </div>
+            </div>
+
+            <!-- Target Text Panel --><div class="flex-1 relative bg-white p-4 rounded-xl border border-gray-300">
+                <label for="targetLanguage" class="block text-sm font-semibold text-gray-700 mb-1">Target Language</label>
+                <select id="targetLanguage" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 mb-3 shadow-sm">
+                    <option value="Spanish" selected>Spanish</option>
+                    <option value="English">English</option>
+                    <option value="French">French</option>
+                    <option value="German">German</option>
+                    <option value="Chinese (Mandarin)">Chinese (Mandarin)</option>
+                    <option value="Japanese">Japanese</option>
+                    <option value="Korean">Korean</option>
+                    <option value="Arabic">Arabic</option>
+                    <option value="Hindi">Hindi</option>
+                    <option value="Swahili">Swahili</option>
+                </select>
+
+                <textarea id="translatedText" rows="12" placeholder="Your translation will appear here." class="w-full p-4 bg-white border border-gray-300 rounded-lg resize-none pointer-events-none text-base text-gray-800"></textarea>
+                
+                <!-- NEW: Listen Button (TTS) --><button id="listenButton" class="absolute bottom-6 right-16 p-2 bg-gray-100 text-gray-600 rounded-full hover:bg-indigo-100 hover:text-indigo-600 transition shadow-md disabled:opacity-50" title="Listen to Translation">
+                    <!-- Speaker Icon --><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon></svg>
+                </button>
+
+                <button id="copyButton" class="absolute bottom-6 right-6 p-2 bg-gray-100 text-gray-600 rounded-full hover:bg-indigo-100 hover:text-indigo-600 transition shadow-md" title="Copy Translation">
+                    <!-- Icon for Copy (Inline SVG) --><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect width="14" height="14" x="8" y="8" rx="2" ry="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script type="module">
+        // Global environment variables provided by the Canvas platform
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const apiKey = ""; // Canvas environment handles the API key internally
+
+        const sourceTextarea = document.getElementById('sourceText');
+        const translatedTextarea = document.getElementById('translatedText');
+        const sourceLanguageSelect = document.getElementById('sourceLanguage');
+        const targetLanguageSelect = document.getElementById('targetLanguage');
+        const translationToneSelect = document.getElementById('translationTone');
+        const translateButton = document.getElementById('translateButton');
+        const swapButton = document.getElementById('swapLanguagesButton');
+        const copyButton = document.getElementById('copyButton');
+        const listenButton = document.getElementById('listenButton');
+        const statusMessage = document.getElementById('statusMessage');
+        const charCountSpan = document.getElementById('charCount');
+        const wordCountSpan = document.getElementById('wordCount');
+        
+        // NEW: Loading Icon element (now a GIF)
+        const loadingIcon = document.getElementById('loadingIcon');
+        
+        // DOM elements for the map feature
+        const languageMapContainer = document.getElementById('languageMapContainer');
+        const mapTitle = document.getElementById('mapTitle');
+        const mapFlag = document.getElementById('mapFlag');
+        const mapSummary = document.getElementById('mapSummary');
+        const mapStatus = document.getElementById('mapStatus');
+
+        const LLM_MODEL_NAME = 'gemini-2.5-flash-preview-09-2025';
+        const TTS_MODEL_NAME = 'gemini-2.5-flash-preview-tts';
+        const LLM_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${LLM_MODEL_NAME}:generateContent?key=${apiKey}`;
+        const TTS_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${TTS_MODEL_NAME}:generateContent?key=${apiKey}`;
+        const MAX_RETRIES = 5;
+
+
+        // --- TTS Utility Functions ---
+
+        /** Converts a base64 string to an ArrayBuffer. */
+        function base64ToArrayBuffer(base64) {
+            const binaryString = atob(base64);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        /** Converts raw PCM data (Int16Array) into a WAV Blob. */
+        function pcmToWav(pcm16, sampleRate) {
+            const numChannels = 1;
+            const bytesPerSample = 2; // 16-bit PCM
+            const byteRate = sampleRate * numChannels * bytesPerSample;
+            const blockAlign = numChannels * bytesPerSample;
+
+            const buffer = new ArrayBuffer(44 + pcm16.length * bytesPerSample);
+            const view = new DataView(buffer);
+            let offset = 0;
+
+            function writeString(s) {
+                for (let i = 0; i < s.length; i++) {
+                    view.setUint8(offset + i, s.charCodeAt(i));
+                }
+                offset += s.length;
+            }
+
+            function writeUint32(i) {
+                view.setUint32(offset, i, true);
+                offset += 4;
+            }
+
+            function writeUint16(i) {
+                view.setUint16(offset, i, true);
+                offset += 2;
+            }
+
+            // RIFF chunk
+            writeString('RIFF');
+            writeUint32(36 + pcm16.length * bytesPerSample); // ChunkSize
+            writeString('WAVE');
+
+            // FMT sub-chunk
+            writeString('fmt ');
+            writeUint32(16); // Subchunk1Size (16 for PCM)
+            writeUint16(1); // AudioFormat (1 for PCM)
+            writeUint16(numChannels);
+            writeUint32(sampleRate);
+            writeUint32(byteRate);
+            writeUint16(blockAlign);
+            writeUint16(16); // BitsPerSample (16-bit)
+
+            // Data sub-chunk
+            writeString('data');
+            writeUint32(pcm16.length * bytesPerSample); // Subchunk2Size
+
+            // Write PCM data
+            for (let i = 0; i < pcm16.length; i++) {
+                view.setInt16(offset, pcm16[i], true);
+                offset += bytesPerSample;
+            }
+
+            return new Blob([buffer], { type: 'audio/wav' });
+        }
+
+        /** Plays the audio Blob using AudioContext. */
+        function playAudio(audioBlob) {
+            const url = URL.createObjectURL(audioBlob);
+            const audio = new Audio(url);
+            audio.play();
+            audio.onended = () => {
+                URL.revokeObjectURL(url);
+            };
+        }
+
+
+        /**
+         * Sends the translated text to the TTS API for playback.
+         */
+        async function speakTranslatedText() {
+            const textToSpeak = translatedTextarea.value.trim();
+            const targetLang = targetLanguageSelect.value;
+            
+            if (!textToSpeak) {
+                statusMessage.textContent = 'No translated text to play.';
+                setTimeout(() => statusMessage.textContent = '', 3000);
+                return;
+            }
+
+            listenButton.disabled = true;
+            listenButton.innerHTML = `<svg class="animate-pulse" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="10" y="2" width="4" height="20" rx="2" ry="2"/><rect x="4" y="8" width="4" height="8" rx="2" ry="2"/><rect x="16" y="8" width="4" height="8" rx="2" ry="2"/></svg>`;
+            statusMessage.textContent = 'Generating speech audio...';
+            
+            // Note: We use the language name as context for the TTS engine.
+            const prompt = `Say in a standard, clear tone, recognizing the language is ${targetLang}: ${textToSpeak}`;
+
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }],
+                generationConfig: {
+                    responseModalities: ["AUDIO"],
+                    speechConfig: {
+                        voiceConfig: {
+                            prebuiltVoiceConfig: { voiceName: "Charon" } // A clear, informative voice
+                        }
+                    }
+                },
+                model: TTS_MODEL_NAME
+            };
+
+            for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+                try {
+                    const response = await fetch(TTS_API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (response.status === 429 && attempt < MAX_RETRIES - 1) {
+                        const delay = Math.pow(2, attempt) * 1000 + Math.random() * 1000;
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        continue;
+                    }
+
+                    if (!response.ok) {
+                        throw new Error(`TTS API request failed with status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    const part = result.candidates?.[0]?.content?.parts?.[0];
+                    const audioData = part?.inlineData?.data;
+                    const mimeType = part?.inlineData?.mimeType; // e.g., audio/L16;rate=24000
+
+                    if (!audioData || !mimeType) {
+                        throw new Error('Received invalid audio data from API.');
+                    }
+                    
+                    const sampleRateMatch = mimeType.match(/rate=(\d+)/);
+                    if (!sampleRateMatch || sampleRateMatch.length < 2) {
+                        throw new Error('Could not parse audio sample rate from mime type.');
+                    }
+
+                    const sampleRate = parseInt(sampleRateMatch[1], 10);
+                    const pcmDataBuffer = base64ToArrayBuffer(audioData);
+                    const pcm16 = new Int16Array(pcmDataBuffer);
+                    
+                    const wavBlob = pcmToWav(pcm16, sampleRate);
+                    playAudio(wavBlob);
+                    
+                    statusMessage.textContent = 'Audio playing...';
+                    break; // Success
+
+                } catch (error) {
+                    console.error('TTS Error:', error);
+                    statusMessage.textContent = `TTS failed: ${error.message}`;
+                    if (attempt === MAX_RETRIES - 1) {
+                        break; // Failed all retries
+                    }
+                }
+            }
+
+            // Reset button state
+            listenButton.disabled = false;
+            listenButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon></svg>`;
+            setTimeout(() => {
+                if(!statusMessage.textContent.includes('failed')) {
+                    statusMessage.textContent = '';
+                }
+            }, 5000);
+        }
+
+
+        // --- Utility Functions ---
+
+        /**
+         * Updates the character and word counts for the source text.
+         */
+        function updateCounts() {
+            const text = sourceTextarea.value;
+            const charCount = text.length;
+            const wordCount = text.trim().split(/\s+/).filter(word => word.length > 0).length;
+
+            charCountSpan.textContent = `${charCount} characters`;
+            wordCountSpan.textContent = `${wordCount} words`;
+        }
+        
+        /**
+         * Swaps the source and target languages in the dropdowns.
+         */
+        function swapLanguages() {
+            const sourceLang = sourceLanguageSelect.value;
+            const targetLang = targetLanguageSelect.value;
+
+            // Only swap if the source is not "Auto-Detect"
+            if (sourceLang !== "Auto-Detect" && targetLang !== "Auto-Detect") {
+                sourceLanguageSelect.value = targetLang;
+                targetLanguageSelect.value = sourceLang;
+            } else if (sourceLang === "Auto-Detect" && targetLang !== "Auto-Detect") {
+                // If source is Auto, set source to target and target to a common language (e.g., English)
+                sourceLanguageSelect.value = targetLang;
+                targetLanguageSelect.value = 'English';
+            } else if (targetLang === "Auto-Detect") {
+                 // If target is Auto, set target to source and source to English (as a safe default)
+                targetLanguageSelect.value = sourceLang;
+                sourceLanguageSelect.value = 'English';
+            }
+            
+            // Clear translated text upon swap
+            translatedTextarea.value = '';
+            statusMessage.textContent = 'Languages swapped.';
+            setTimeout(() => statusMessage.textContent = '', 3000);
+            
+            // Re-trigger the map feature for the new source language
+            generateLanguageMapSummary(sourceLanguageSelect.value);
+        }
+
+        /**
+         * Copies the translated text to the clipboard using the fallback method.
+         */
+        function copyToClipboard() {
+            const text = translatedTextarea.value;
+            if (!text) {
+                statusMessage.textContent = 'No text to copy.';
+                setTimeout(() => statusMessage.textContent = '', 3000);
+                return;
+            }
+
+            // Create a temporary textarea element
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = text;
+            tempTextArea.style.position = 'fixed'; // Avoid scrolling to bottom
+            tempTextArea.style.opacity = '0';
+            document.body.appendChild(tempTextArea);
+
+            // Select the text
+            tempTextArea.select();
+            
+            try {
+                // Execute copy command
+                document.execCommand('copy');
+                statusMessage.textContent = 'Copied to clipboard!';
+            } catch (err) {
+                console.error('Copy command failed:', err);
+                statusMessage.textContent = 'Copy failed. Please manually select and copy the text.';
+            } finally {
+                // Remove the temporary element
+                document.body.removeChild(tempTextArea);
+                setTimeout(() => statusMessage.textContent = '', 3000);
+            }
+        }
+
+        /**
+         * Converts the UI language selection into a model-friendly prompt language.
+         */
+        function getSourceLanguageForPrompt(lang) {
+            return lang === 'Auto-Detect' ? 'the source language (detect automatically)' : lang;
+        }
+
+        // --- MAP SUMMARY LOGIC ---
+
+        /**
+         * Generates a concise summary of the native region and flag for a given language.
+         */
+        async function generateLanguageMapSummary(language) {
+            if (language === 'Auto-Detect') {
+                mapTitle.textContent = 'Source Language Region';
+                mapFlag.textContent = '🤔';
+                mapSummary.textContent = 'Region map not available for Auto Detect.';
+                return;
+            }
+
+            mapTitle.textContent = `Region: ${language}`;
+            mapFlag.textContent = '...';
+            mapSummary.textContent = 'Generating region data...';
+            mapStatus.textContent = '';
+
+
+            const systemPrompt = "You are a concise linguistic geography expert. Your task is to identify the primary native region(s) and the most relevant flag emoji for a given language. Respond *only* with a JSON object that strictly adheres to the provided schema. The summary must be brief (1-2 sentences).";
+
+            const userQuery = `Provide the region summary and flag emoji for the language: ${language}.`;
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: "OBJECT",
+                        properties: {
+                            language: { type: "STRING" },
+                            flag_emoji: { type: "STRING" },
+                            native_region_summary: { type: "STRING" }
+                        },
+                        propertyOrdering: ["language", "flag_emoji", "native_region_summary"]
+                    }
+                }
+            };
+
+            const apiUrl = LLM_API_URL;
+
+            for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (response.status === 429 && attempt < MAX_RETRIES - 1) {
+                        const delay = Math.pow(2, attempt) * 1000 + Math.random() * 1000;
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        continue;
+                    }
+
+                    if (!response.ok) {
+                         throw new Error(`API request failed with status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    const jsonText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                    const parsedJson = JSON.parse(jsonText);
+                    
+                    if (parsedJson && parsedJson.flag_emoji && parsedJson.native_region_summary) {
+                        mapFlag.textContent = parsedJson.flag_emoji;
+                        mapSummary.textContent = parsedJson.native_region_summary;
+                        mapStatus.textContent = '';
+                    } else {
+                        throw new Error("Invalid JSON structure received.");
+                    }
+                    break; // Success
+
+                } catch (error) {
+                    console.error('Error fetching map summary:', error);
+                    mapFlag.textContent = '❌';
+                    mapSummary.textContent = 'Could not load region data.';
+                    mapStatus.textContent = `Error: ${error.message.substring(0, 50)}...`;
+                    if (attempt === MAX_RETRIES - 1) {
+                        break; // Failed all retries
+                    }
+                }
+            }
+        }
+
+
+        // --- Core Translation Logic ---
+
+        /**
+         * Sends the translation request to the Gemini API with exponential backoff.
+         */
+        async function translateText() {
+            const sourceText = sourceTextarea.value.trim();
+            const sourceLang = sourceLanguageSelect.value;
+            const targetLang = targetLanguageSelect.value;
+            const selectedTone = translationToneSelect.value;
+
+            if (!sourceText) {
+                statusMessage.textContent = 'Please enter text to translate.';
+                setTimeout(() => statusMessage.textContent = '', 3000);
+                return;
+            }
+            
+            if (sourceLang === targetLang) {
+                 statusMessage.textContent = `Source and Target languages are the same (${sourceLang}).`;
+                 return;
+            }
+
+            // Set UI to loading state
+            translateButton.disabled = true;
+            translateButton.textContent = '... Translating ...';
+            loadingIcon.classList.remove('hidden'); // SHOW DANCING ANIMAL GIF
+            statusMessage.textContent = 'Consulting the Polyglot Portal...';
+            translatedTextarea.value = '';
+
+            const systemPrompt = "You are a world-class, multi-lingual translation engine. Your sole task is to translate the input text precisely and idiomatically into the target language. Respond *only* with the translated text, nothing else. Do not add any conversational text, notes, or source information. Ensure the output strictly adheres to the requested tone.";
+
+            const sourceLangPrompt = getSourceLanguageForPrompt(sourceLang);
+
+            // Updated query to include tone instruction
+            const userQuery = `Translate the following text from ${sourceLangPrompt} to ${targetLang}. The desired tone for the output is: ${selectedTone}. Text: "${sourceText}"`;
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                systemInstruction: {
+                    parts: [{ text: systemPrompt }]
+                },
+            };
+
+            for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+                try {
+                    const response = await fetch(LLM_API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (response.status === 429 && attempt < MAX_RETRIES - 1) {
+                        const delay = Math.pow(2, attempt) * 1000 + Math.random() * 1000;
+                        console.warn(`Rate limit hit, retrying in ${Math.round(delay / 1000)}s...`);
+                        statusMessage.textContent = `Retrying translation (attempt ${attempt + 2}/${MAX_RETRIES})...`;
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        continue;
+                    }
+
+                    if (!response.ok) {
+                        throw new Error(`API request failed with status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    const translatedText = result.candidates?.[0]?.content?.parts?.[0]?.text || 'Translation failed or returned empty content.';
+
+                    translatedTextarea.value = translatedText;
+                    statusMessage.textContent = 'Translation complete.';
+                    break; // Success, exit the loop
+
+                } catch (error) {
+                    console.error('Error during translation:', error);
+                    statusMessage.textContent = `Translation failed: ${error.message}`;
+                    translatedTextarea.value = 'An error occurred during translation.';
+                    if (attempt === MAX_RETRIES - 1) {
+                        break; // Failed all retries
+                    }
+                }
+            }
+
+            // Reset UI state
+            translateButton.disabled = false;
+            translateButton.textContent = 'Translate Text';
+            loadingIcon.classList.add('hidden'); // HIDE DANCING ANIMAL GIF
+
+            // Clear status after 5s unless it's a final error
+            setTimeout(() => {
+                if(!statusMessage.textContent.includes('failed')) {
+                    statusMessage.textContent = '';
+                }
+            }, 5000);
+        }
+
+        // --- Event Listeners and Initialization ---
+        
+        window.onload = () => {
+             // Initialize AudioContext on user interaction later to avoid browser warnings
+             window.AudioContext = window.AudioContext || window.webkitAudioContext;
+             
+             const defaultText = "The project requires a comprehensive, multi-disciplinary approach to solve the challenge of sustainable urban development. We must collaborate across various fields.";
+             sourceTextarea.value = defaultText;
+             updateCounts();
+             // Initial call to generate the map summary for the default source language
+             generateLanguageMapSummary(sourceLanguageSelect.value);
+        }
+        
+        // Listeners
+        translateButton.addEventListener('click', translateText);
+        swapButton.addEventListener('click', swapLanguages);
+        copyButton.addEventListener('click', copyToClipboard);
+        listenButton.addEventListener('click', speakTranslatedText);
+        sourceTextarea.addEventListener('input', updateCounts);
+        
+        // Listener to generate the map summary whenever the source language changes
+        sourceLanguageSelect.addEventListener('change', (e) => generateLanguageMapSummary(e.target.value));
+
+        // Allow translation on Enter key press in the source textarea
+        sourceTextarea.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                if (!translateButton.disabled) {
+                    translateText();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
